@@ -102,7 +102,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ),
       onPressed: () {
-        Navigator.pushNamed(context, '/goals'); // test
+        Navigator.pushNamed(context, '/goals'); 
       },
     );
   }
