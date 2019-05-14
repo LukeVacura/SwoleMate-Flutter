@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
 
 class ColorList {
-  static List<Color> colorOptions;
+  static List<Color> colorOptions = [
+    Colors.cyan[800],
+    Colors.lightGreen[800],
+    Colors.red[900],
+    Colors.purple[800],
+    Colors.blue[900],
+    Colors.amber[900],
+  ];
 
   static (){
     colorOptions = [
       Colors.cyan[800],
-      Colors.deepPurple[300],
       Colors.lightGreen[800],
       Colors.red[900],
-      Colors.blue[800],
-      Colors.lightBlue[400],
       Colors.purple[800],
-      Colors.pink[700],
+      Colors.blue[900],
       Colors.amber[800],
     ];
   }
 
-  // List<Color> setColorList(){
-  //   colorOptions.add(Colors.cyan[800]);
-  //   colorOptions.add(Colors.deepPurple[300]);
-  //   colorOptions.add(Colors.lightGreen[800]);
-  //   colorOptions.add(Colors.red[900]);
-  //   colorOptions.add(Colors.blue[800]);
-  //   colorOptions.add(Colors.purple[800]);
-  //   colorOptions.add(Colors.lightBlue[400]);
-  //   colorOptions.add(Colors.pink[700]);
-  //   colorOptions.add(Colors.amber[800]);
-
-  //   return colorOptions;
-  // }
+    // colors.add(Colors.cyan);
+    // colors.add(Colors.lightGreen);
+    // colors.add(Colors.red);
+    // colors.add(Colors.purple);
+    // colors.add(Colors.blue);
+    // colors.add(Colors.amber);
 
   static List<Color> getColorList(){
     return colorOptions;

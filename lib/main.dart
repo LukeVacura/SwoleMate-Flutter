@@ -20,6 +20,7 @@ class MyApp extends State<SwoleMateApp> {
   AppModel _model;
   bool _isAuthenticated = false;
   bool _isDarkThemeUsed = true;
+  bool _areUnitsImperial = true;
 
   @override
   void initState() {
@@ -37,6 +38,12 @@ class MyApp extends State<SwoleMateApp> {
     _model.themeSubject.listen((bool isDarkThemeUsed) {
       setState(() {
         _isDarkThemeUsed = isDarkThemeUsed;
+      });
+    });
+
+    _model.themeSubject.listen((bool areUnitsImperial) {
+      setState(() {
+        _areUnitsImperial = areUnitsImperial;
       });
     });
 
@@ -60,7 +67,7 @@ class MyApp extends State<SwoleMateApp> {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         accentColor: Colors.lightBlue[300],
-        brightness: Brightness.dark,
+        brightness: _isDarkThemeUsed? Brightness.dark : Brightness.light,
       ),
       routes: {
           '/settings': (BuildContext context) => SettingsPage(_model),

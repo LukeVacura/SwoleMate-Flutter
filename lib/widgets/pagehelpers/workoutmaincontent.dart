@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:swolemate/models/appmodel.dart';
+import 'package:swolemate/widgets/pagehelpers/workoutpop.dart';
 
 import 'package:swolemate/widgets/ui/loading.dart';
 
@@ -113,7 +114,7 @@ class _WorkoutPageContentState extends State<WorkoutPageContent> {
           child: Text(
             getDisplay(),
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: getDisplayColor()),
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: model.settings.isDarkThemeUsed ? Colors.white : Colors.black),
           ),
         ),
         Ink(
@@ -150,10 +151,11 @@ class _WorkoutPageContentState extends State<WorkoutPageContent> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         new Container(
-          color: Colors.black26,
+          color: model.settings.isDarkThemeUsed ? Colors.grey[900] : Colors.grey[300],
           child:
             _buildCalendar(model),
         ),
+        WorkoutInformation(model),
       ],
     );
   }

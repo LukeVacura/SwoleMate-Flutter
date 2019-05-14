@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 //import 'package:swolemate/models/objects/firebase.dart';
 import 'package:swolemate/models/objects/app.dart';
 import 'package:swolemate/models/appmodel.dart';
+import 'package:swolemate/models/objects/colorlist.dart';
 import 'dart:async';
 
 import 'package:swolemate/widgets/helpers/confirmdialog.dart';
@@ -33,7 +34,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
   Widget _buildAppBar(AppModel model) {
     return AppBar(
-      backgroundColor: Colors.pink[700],
+      backgroundColor: ColorList.getColorList().elementAt(model.settings.setColor),
       leading: Icon(Icons.favorite),
       title: Text(AppInfo.AppName),
       actions: <Widget>[
@@ -171,8 +172,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
           // ),
         ],
       ),
-      //color: Colors.cyan[900],
-      color: Colors.black26,
+      color: model.settings.isDarkThemeUsed ? Colors.grey[900] : Colors.grey[300],
       shape: CircularNotchedRectangle(),
     );
   }

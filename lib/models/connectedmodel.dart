@@ -296,13 +296,18 @@ mixin SettingsModel on CoreModel {
   void loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final isDarkThemeUsed = _loadIsDarkThemeUsed(prefs);
+    final areUnitsImperial = _loadAreUnitsImperial(prefs);
+    //final setColor = _loadCurrentColor(prefs);
 
     _settings = Settings(
       isShortcutsEnabled: _loadIsShortcutsEnabled(prefs),
       isDarkThemeUsed: isDarkThemeUsed,
+      areUnitsImperial: areUnitsImperial,
+      setColor: _loadCurrentColor(prefs),
     );
 
     _themeSubject.add(isDarkThemeUsed);
+    _themeSubject.add(areUnitsImperial);
   }
 
   bool _loadIsShortcutsEnabled(SharedPreferences prefs) {
@@ -318,6 +323,21 @@ mixin SettingsModel on CoreModel {
         ? true
         : false;
   }
+  bool _loadAreUnitsImperial(SharedPreferences prefs) {
+    return prefs.getKeys().contains('areUnitsImperial') &&
+            prefs.getBool('areUnitsImperial')
+        ? true
+        : false;
+  }
+
+  int _loadCurrentColor(SharedPreferences prefs) {
+    if (prefs.getInt('setColor') == null){
+      return 0;
+    }
+    else{
+      return prefs.getInt('setColor');
+    }
+  }
 
   Future toggleIsShortcutEnabled() async {
     _isLoading = true;
@@ -329,6 +349,8 @@ mixin SettingsModel on CoreModel {
     _settings = Settings(
       isShortcutsEnabled: _loadIsShortcutsEnabled(prefs),
       isDarkThemeUsed: _loadIsDarkThemeUsed(prefs),
+      areUnitsImperial: _loadAreUnitsImperial(prefs),
+      setColor: _loadCurrentColor(prefs),
     );
 
     _isLoading = false;
@@ -348,6 +370,46 @@ mixin SettingsModel on CoreModel {
     _settings = Settings(
       isShortcutsEnabled: _loadIsShortcutsEnabled(prefs),
       isDarkThemeUsed: _loadIsDarkThemeUsed(prefs),
+      areUnitsImperial: _loadAreUnitsImperial(prefs),
+      setColor: _loadCurrentColor(prefs),
+    );
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future toggleAreUnitsImperial() async {
+    _isLoading = true;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    final areUnitsImperial = !_loadAreUnitsImperial(prefs);
+    prefs.setBool('areUnitsImperial', areUnitsImperial);
+
+    _settings = Settings(
+      isShortcutsEnabled: _loadIsShortcutsEnabled(prefs),
+      isDarkThemeUsed: _loadIsDarkThemeUsed(prefs),
+      areUnitsImperial: _loadAreUnitsImperial(prefs),
+      setColor: _loadCurrentColor(prefs),
+    );
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future toggleColor(int color) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final prefs = await SharedPreferences.getInstance();
+    final setColor = color;
+    prefs.setInt('setColor', setColor);
+
+    _settings = Settings(
+      isShortcutsEnabled: _loadIsShortcutsEnabled(prefs),
+      isDarkThemeUsed: _loadIsDarkThemeUsed(prefs),
+      areUnitsImperial: _loadAreUnitsImperial(prefs),
+      setColor: _loadCurrentColor(prefs),
     );
 
     _isLoading = false;
