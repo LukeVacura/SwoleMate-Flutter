@@ -9,7 +9,6 @@ import 'dart:async';
 
 import 'package:swolemate/widgets/helpers/confirmdialog.dart';
 import 'package:swolemate/widgets/ui/loading.dart';
-import 'package:swolemate/widgets/pagehelpers/settingsmaincontent.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -72,7 +71,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildBody(AppModel model){
-    return ListView(
+    return model.isLoading ? LoadingModal() :
+    ListView(
       children: getSettings(model, context),
 
     );
@@ -87,10 +87,6 @@ class _SettingsPageState extends State<SettingsPage> {
             _buildPageContent(model),
           ],
         );
-
-        if (model.isLoading) {
-          stack.children.add(LoadingModal());
-        }
 
         return stack;
       },
@@ -151,10 +147,13 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  bool isSwitched = true;
+
   List<Widget> getSettings(AppModel model, BuildContext context) {
-  Color titleColor = model.settings.isDarkThemeUsed? Colors.grey[700] : Colors.white;
-  Color tileColor = model.settings.isDarkThemeUsed? Colors.grey[800] : Colors.grey[200];
+    // I have no idea why this model boolean calls are working when it's broken on the other page currently
+    // Weird stuff - will look into a fix later - 5/14/19
+    Color titleColor = model.settings.isDarkThemeUsed? Colors.grey[700] : Colors.white;
+    Color tileColor = model.settings.isDarkThemeUsed? Colors.grey[800] : Colors.grey[200];
+
     return [
     Container(
       margin: EdgeInsetsDirectional.fromSTEB(4.0, 8.0, 4.0, 5.0),

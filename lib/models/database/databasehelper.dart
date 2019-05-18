@@ -13,14 +13,14 @@ class DatabaseHelper {
   static final group = 'Group';
   static final belongsIn = 'ExerciseBelongsIn';
   
-  static final exerciseId = '_id';
+  static final exerciseId = 'exerciseId';
   static final exerciseName = 'name';
   static final exerciseType = 'type';
   static final exercisePref = 'pref';
   static final exerciseSuf = 'suf';
   static final exerciseDesc = 'desc';
 
-  static final groupId = '_kid';
+  static final groupId = 'groupId';
   static final groupName = 'name';
 
   // make this a singleton class
@@ -62,17 +62,17 @@ class DatabaseHelper {
             $exercisePref INTEGER NOT NULL,
             $exerciseSuf INTEGER NOT NULL,
             $exerciseDesc TEXT
-          ),
+          );
           CREATE TABLE $group (
             $groupId INTEGER PRIMARY KEY,
             $groupName TEXT NOT NULL
-          ),
+          );
           CREATE TABLE $belongsIn (
             $groupId INTEGER PRIMARY KEY,
             $exerciseId INTEGER PRIMARY KEY,
             FOREIGN KEY ($exerciseId) REFERENCES $exercise($exerciseId),
             FOREIGN KEY ($groupId) REFERENCES $group($groupId)
-          ),
+          );
           '''
           
           );
@@ -102,7 +102,7 @@ class DatabaseHelper {
   // a key-value list of columns.
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database db = await instance.database;
-    return await db.rawQuery('SELECT * FROM $exercise NATURAL JOIN $belongsIn NATURAL JOIN $group');
+    return await db.rawQuery('SELECT * FROM $exercise');
   }
 
   // All of the methods (insert, query, update, delete) can also be done using

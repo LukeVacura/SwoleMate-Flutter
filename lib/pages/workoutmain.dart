@@ -1,6 +1,7 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
+import 'package:swolemate/models/handlers/settingshandler.dart';
 //import 'package:swolemate/models/objects/firebase.dart';
 import 'package:swolemate/models/objects/app.dart';
 import 'package:swolemate/models/appmodel.dart';
@@ -13,6 +14,8 @@ import 'package:swolemate/widgets/pagehelpers/workoutmaincontent.dart';
 
 class WorkoutPage extends StatefulWidget {
   final AppModel model;
+
+  
 
   WorkoutPage(this.model);
 
@@ -27,14 +30,12 @@ class WorkoutPage extends StatefulWidget {
 class _WorkoutPageState extends State<WorkoutPage> {
   @override
   void initState() {
-    //widget.model.fetchExercises();
-
     super.initState();
   }
 
   Widget _buildAppBar(AppModel model) {
     return AppBar(
-      backgroundColor: ColorList.getColorList().elementAt(model.settings.setColor),
+      backgroundColor: SettingsHandler.getColor(model),
       leading: Icon(Icons.favorite),
       title: Text(AppInfo.AppName),
       actions: <Widget>[
@@ -103,7 +104,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ),
       onPressed: () {
-        Navigator.pushNamed(context, '/goals'); 
+        Navigator.pushNamed(context, '/import'); 
       },
     );
   }
@@ -127,7 +128,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ),
       onPressed: () {
-        Navigator.pushNamed(context, '/import');
+        Navigator.pushNamed(context, '/addexercise');
       },
     );
   }
@@ -152,7 +153,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
         ),
       ),
        onPressed: () {
-        Navigator.pushNamed(context, '/goals');
+        Navigator.pushNamed(context, '/save');
       },
     );
   }
@@ -172,7 +173,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
           // ),
         ],
       ),
-      color: model.settings.isDarkThemeUsed ? Colors.grey[900] : Colors.grey[300],
+      color: SettingsHandler.isDarkThemeUsed(model) ? Colors.grey[900] : Colors.grey[300],
       shape: CircularNotchedRectangle(),
     );
   }
@@ -203,5 +204,6 @@ class _WorkoutPageState extends State<WorkoutPage> {
         return stack;
       },
     );
+    
   }
 }

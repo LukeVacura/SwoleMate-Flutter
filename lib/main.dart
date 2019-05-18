@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swolemate/pages/addexercise.dart';
 import 'package:swolemate/pages/settings.dart';
 
 import 'package:swolemate/pages/workoutmain.dart';
@@ -19,7 +20,7 @@ class MyApp extends State<SwoleMateApp> {
   // This widget is the root of your application.
   AppModel _model;
   bool _isAuthenticated = false;
-  bool _isDarkThemeUsed = true;
+  bool _isDarkThemeUsed = false;
   bool _areUnitsImperial = true;
 
   @override
@@ -55,34 +56,41 @@ class MyApp extends State<SwoleMateApp> {
     return ScopedModel<AppModel>(
       model: _model,
       child: MaterialApp(
-      title: 'SwoleMate',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        accentColor: Colors.lightBlue[300],
-        brightness: _isDarkThemeUsed? Brightness.dark : Brightness.light,
-      ),
-      routes: {
-          '/settings': (BuildContext context) => SettingsPage(_model),
-          // '/editor': (BuildContext context) =>
-          //     _isAuthenticated ? TodoEditorPage() : AuthPage(),
-          // '/register': (BuildContext context) =>
-          //     _isAuthenticated ? WorkoutPage(_model) : RegisterPage(),
-          // '/profile': (BuildContext context) =>
-          //     _isAuthenticated ? ProfilePage(_model) : AuthPage(),
-          // '/goals' : (BuildContext context) =>
-          //     _isAuthenticated ? GoalsPage(_model) : AuthPage(),
-          // '/import' : (BuildContext context) =>
-          //     _isAuthenticated ? ImportPage(_model) : AuthPage(),
+        title: 'SwoleMate',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          accentColor: Colors.lightBlue[300],
+          brightness: _isDarkThemeUsed? Brightness.dark : Brightness.light,
+        ),
+        routes: {
+            '/': (BuildContext context) => WorkoutPage(_model),
+            '/settings': (BuildContext context) => SettingsPage(_model),
+            '/addexercise' : (BuildContext context) => ExerciseListPage(_model),
+            // '/editor': (BuildContext context) =>
+            //     _isAuthenticated ? TodoEditorPage() : AuthPage(),
+            // '/register': (BuildContext context) =>
+            //     _isAuthenticated ? WorkoutPage(_model) : RegisterPage(),
+            // '/profile': (BuildContext context) =>
+            //     _isAuthenticated ? ProfilePage(_model) : AuthPage(),
+            // '/goals' : (BuildContext context) =>
+            //     _isAuthenticated ? GoalsPage(_model) : AuthPage(),
+            // '/import' : (BuildContext context) =>
+            //     _isAuthenticated ? ImportPage(_model) : AuthPage(),
+          },
+        onUnknownRoute: (RouteSettings settings){
+          return MaterialPageRoute(
+            builder: (BuildContext context) => WorkoutPage(_model)
+          );    
         },
-      home: WorkoutPage(_model),
+      //home: WorkoutPage(_model),
       ),
     );
   }

@@ -295,26 +295,26 @@ mixin SettingsModel on CoreModel {
 
   void loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    final isDarkThemeUsed = _loadIsDarkThemeUsed(prefs);
     final areUnitsImperial = _loadAreUnitsImperial(prefs);
-    //final setColor = _loadCurrentColor(prefs);
+    final colorSet = _loadCurrentColor(prefs);
+    final isDarkThemeUsed = false;
 
     _settings = Settings(
       isShortcutsEnabled: _loadIsShortcutsEnabled(prefs),
-      isDarkThemeUsed: isDarkThemeUsed,
+      isDarkThemeUsed: false,
       areUnitsImperial: areUnitsImperial,
-      setColor: _loadCurrentColor(prefs),
+      setColor: colorSet,
     );
 
     _themeSubject.add(isDarkThemeUsed);
-    _themeSubject.add(areUnitsImperial);
   }
 
   bool _loadIsShortcutsEnabled(SharedPreferences prefs) {
-    return prefs.getKeys().contains('isShortcutsEnabled') &&
-            prefs.getBool('isShortcutsEnabled')
-        ? true
-        : false;
+    // return prefs.getKeys().contains('isShortcutsEnabled') &&
+    //         prefs.getBool('isShortcutsEnabled')
+    //     ? true
+    //     : false;
+    return true;
   }
 
   bool _loadIsDarkThemeUsed(SharedPreferences prefs) {
@@ -331,11 +331,12 @@ mixin SettingsModel on CoreModel {
   }
 
   int _loadCurrentColor(SharedPreferences prefs) {
-    if (prefs.getInt('setColor') == null){
-      return 0;
-    }
-    else{
+    try{
       return prefs.getInt('setColor');
+    }
+    catch (Exception){
+      prefs.setInt('setColor', 0);
+      return 0;
     }
   }
 
