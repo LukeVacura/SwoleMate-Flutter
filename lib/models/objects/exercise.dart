@@ -18,7 +18,7 @@ class Exercise {
     this.desc,
   });
 
-  factory Exercise.fromJson(Map<String, dynamic> json) => new Exercise(
+  factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
         id: json["id"],
         name: json["name"],
         type: json["type"],
@@ -27,7 +27,7 @@ class Exercise {
         desc: json["desc"],
     );
 
-    Map<String, dynamic> toJson() => {
+    Map<String, dynamic> toMap() => {
         "id": id,
         "name": name,
         "type": type,

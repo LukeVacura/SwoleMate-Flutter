@@ -3,31 +3,31 @@ import 'package:swolemate/models/objects/Exercise.dart';
 import 'databasehelper.dart';
 
 class DatabasePopulate{
-  static final dbHelper = DatabaseHelper.instance;
+  static final dbHelper = DBHelper.instance;
 
   static void insert() async {
       // row to insert
       Map<String, dynamic> row = {
-        DatabaseHelper.exerciseName : 'Barbell bench press',
-        DatabaseHelper.exerciseType  : 1,
-        DatabaseHelper.exercisePref  : 0,
-        DatabaseHelper.exerciseSuf  : 0,
-        DatabaseHelper.exerciseDesc  : '',
+        DBHelper.exerciseName : 'Barbell bench press',
+        DBHelper.exerciseType  : 1,
+        DBHelper.exercisePref  : 0,
+        DBHelper.exerciseSuf  : 0,
+        DBHelper.exerciseDesc  : '',
       };
       final id = await dbHelper.insertIntoExercise(row);
       print('inserted row id: $id');
 
       row.clear();
       row = {
-        DatabaseHelper.groupName : 'Chest',
+        DBHelper.groupName : 'Chest',
       };
       final id2 = await dbHelper.insertIntoGroup(row);
       print('inserted row id: $id2');
 
       row.clear();
       row = {
-        DatabaseHelper.groupId : id2,
-        DatabaseHelper.exerciseId : id,
+        DBHelper.groupId : id2,
+        DBHelper.exerciseId : id,
       };
     }
 

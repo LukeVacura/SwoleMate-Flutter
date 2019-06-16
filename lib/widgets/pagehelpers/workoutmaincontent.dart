@@ -20,6 +20,7 @@ class WorkoutPageContent extends StatefulWidget {
 }
 
 class _WorkoutPageContentState extends State<WorkoutPageContent> {
+
    void handleNewDate(date) {
     print("handleNewDate ${date}");
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:swolemate/models/appmodel.dart';
+import 'package:swolemate/models/database/databasehelper.dart';
 
 import 'package:swolemate/models/database/databasepopulate.dart';
 import 'package:swolemate/models/handlers/settingshandler.dart';
@@ -25,21 +26,26 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     super.initState();
   }
 
-  static List<Exercise> chestExercises = ListHandler.getChestExercises();
-  static List<Exercise> backExercises = ListHandler.getBackExercises();
-  static List<Exercise> shoulderExercises = ListHandler.getShoulderExercises();
-  static List<Exercise> trapExercises = ListHandler.getTrapExercises();
-  static List<Exercise> bicepsExercises = ListHandler.getBicepsExercises();
-  static List<Exercise> tricepsExercises = ListHandler.getTricepsExercises();
-  static List<Exercise> forearmsExercises = ListHandler.getForearmExercises();
-  static List<Exercise> coreExercises = ListHandler.getAbExercises();
-  static List<Exercise> glutesExercises = ListHandler.getGluteExercises();
-  static List<Exercise> quadExercises = ListHandler.getQuadExercises();
-  static List<Exercise> hamstringExercises = ListHandler.getHamstringExercises();
-  static List<Exercise> calfExercises = ListHandler.getCalfExercises();
-  static List<Exercise> cardioExercises = ListHandler.getCardioExercises();
-  static List<Exercise> fullbodyExercises = ListHandler.getFBExercises();
-  static List<Exercise> otherExercises = ListHandler.getOtherExercises();
+  static final dbHelper = DBHelper.instance;
+
+  static Future<List<Exercise>> chest = dbHelper.getAllExercises();
+
+
+  static Future<List<Exercise>> chestExercises = chest;
+  // static List<Exercise> backExercises = ListHandler.getBackExercises();
+  // static List<Exercise> shoulderExercises = ListHandler.getShoulderExercises();
+  // static List<Exercise> trapExercises = ListHandler.getTrapExercises();
+  // static List<Exercise> bicepsExercises = ListHandler.getBicepsExercises();
+  // static List<Exercise> tricepsExercises = ListHandler.getTricepsExercises();
+  // static List<Exercise> forearmsExercises = ListHandler.getForearmExercises();
+  // static List<Exercise> coreExercises = ListHandler.getAbExercises();
+  // static List<Exercise> glutesExercises = ListHandler.getGluteExercises();
+  // static List<Exercise> quadExercises = ListHandler.getQuadExercises();
+  // static List<Exercise> hamstringExercises = ListHandler.getHamstringExercises();
+  // static List<Exercise> calfExercises = ListHandler.getCalfExercises();
+  // static List<Exercise> cardioExercises = ListHandler.getCardioExercises();
+  // static List<Exercise> fullbodyExercises = ListHandler.getFBExercises();
+  // static List<Exercise> otherExercises = ListHandler.getOtherExercises();
   
   static int newID = 2001;
   static int newType = 1;
@@ -61,22 +67,22 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     "Full body",
     "Other",
   ];
-  static final List<List<Exercise>> exercises = [
+  static final List<Future<List<Exercise>>> exercises = [
       chestExercises, //1
-      backExercises,
-      shoulderExercises,
-      bicepsExercises,
-      tricepsExercises, //5
-      trapExercises,
-      forearmsExercises, 
-      coreExercises,
-      glutesExercises,
-      quadExercises, //10
-      hamstringExercises, 
-      calfExercises,
-      cardioExercises,
-      fullbodyExercises, 
-      otherExercises, //15
+      // backExercises,
+      // shoulderExercises,
+      // bicepsExercises,
+      // tricepsExercises, //5
+      // trapExercises,
+      // forearmsExercises, 
+      // coreExercises,
+      // glutesExercises,
+      // quadExercises, //10
+      // hamstringExercises, 
+      // calfExercises,
+      // cardioExercises,
+      // fullbodyExercises, 
+      // otherExercises, //15
   ];
 
   TextEditingController weightController = new TextEditingController();
@@ -126,33 +132,63 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     );
   }
 
-  Widget _buildExerciseList(AppModel model) {
-    List<ExpansionTile> _listOfExpansions = List<ExpansionTile>.generate(
+  // Widget _buildExerciseList(AppModel model) {
+  //   List<ExpansionTile> _listOfExpansions = List<ExpansionTile>.generate(
 
-      15,
-      (i) => ExpansionTile(
-            title: Text(groups.elementAt(i)),
-            children: exercises.elementAt(i)
-                .map((data) => ListTile(
+  //     15,
+  //     (i) => ExpansionTile(
+  //           title: Text(groups.elementAt(i)),
+  //           children: exercises.elementAt(i)
+  //               .map((data) => ListTile(
                 
-                      leading: Text(data.id.toString()),
-                      title: Text(data.name),
-                      onTap: (){
-                        print("Navigate");
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) => _buildAboutDialog(context, data),);     
-                      }
-                    ))
-                .toList(),
-          ));
+  //                     leading: Text(data.id.toString()),
+  //                     title: Text(data.name),
+  //                     onTap: (){
+  //                       print("Navigate");
+  //                       showDialog(
+  //                         context: context,
+  //                         builder: (BuildContext context) => _buildAboutDialog(context, data),);     
+  //                     }
+  //                   ))
+  //               .toList(),
+  //         ));
 
 
-    return ListView(
-        padding: EdgeInsets.all(8.0),
-        children:
-            _listOfExpansions.map((expansionTile) => expansionTile).toList(),
+  //   return ListView(
+  //       padding: EdgeInsets.all(8.0),
+  //       children:
+  //           _listOfExpansions.map((expansionTile) => expansionTile).toList(),
+  //   );
+  // }
+
+  Widget _buildExerciseList(AppModel model){
+    FutureBuilder<List<Exercise>>(
+      future: DBHelper.instance.getAllExercises(),
+      builder: (BuildContext context, AsyncSnapshot<List<Exercise>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              Exercise item = snapshot.data[index];
+              return ListTile(
+                title: Text(item.name),
+                leading: Text(item.id.toString()),
+                trailing: Checkbox(
+                  onChanged: (bool value) {
+                    // DBProvider.db.blockClient(item);
+                    // setState(() {});
+                  },
+                  //value: item.blocked,
+                ),
+              );
+            },
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
+
   }
 
 
@@ -244,114 +280,8 @@ Widget _buildAboutDialog(BuildContext context, Exercise exercise) {
       
       title: Text('Add New Exercise'),
       content: new Column(
-       mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Text("Please enter the exercise parameters"),
-          new Text(""),
-          new Text(""),
-          new Text("Exercise name:"),
-          new TextField(
-            controller: exerciseController,
-            maxLines: 1,
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Example: Dumbbell high-low fly'
-            ),
-          ),
-          new Text(""),
-          new Text("Group name:"),
-          new TextField(
-            controller: groupController,
-            maxLines: 1,
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Example: Chest'
-            ),
-          ),
-          new Text(""),
-          new Text("Exercise type:"),
-          new TextField(
-            controller: typeController,
-            maxLines: 1,
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Compound or Accessory'
-            ),
-          ),
-        ],
-      ),
-      actions: <Widget>[
-        new FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).accentColor,
-          child: const Text('Close'),
-        ),
-        new FlatButton(
-          onPressed: () {
-            //Navigator.of(context).pop();
-            _showNewExerciseDialog(context);
-            if(typeController.text == 'Compound'){
-              newType = 0;
-            }
-            else{
-              newType = 1;
-            }
-
-            Exercise temp = new Exercise(id: newID.toString(), name: exerciseController.text, type: newType, pref:0, suf:0);
-            switch(groupController.text){
-              case 'Chest': {
-                chestExercises.add(temp);
-                break;
-              }
-              case 'Back': {
-                backExercises.add(temp);
-                break;
-              }
-              case 'Shoulders': {
-                shoulderExercises.add(temp);
-                break;
-              }
-              case 'Biceps': {
-                bicepsExercises.add(temp);
-                break;
-              }
-              case 'Triceps': {
-                tricepsExercises.add(temp);
-                break;
-              }
-              case 'Cardio': {
-                cardioExercises.add(temp);
-                break;
-              }
-              case 'Forearms': {
-                forearmsExercises.add(temp);
-                break;
-              }
-              case 'Quads': {
-                quadExercises.add(temp);
-                break;
-              }
-              case 'Hamstrings': {
-                hamstringExercises.add(temp);
-                break;
-              }
-              default: {
-                otherExercises.add(temp);
-                break;
-              }
-            }
-            newID++;
-          },
-          textColor: Theme.of(context).accentColor,
-          child: const Text('Add Exercise'),
-        ),
-      ],
+      
+      )
     );
   }
   void _showNewExerciseDialog(BuildContext context) {

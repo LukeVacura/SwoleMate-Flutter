@@ -3,8 +3,13 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:swolemate/models/objects/exercise.dart';
+import 'package:swolemate/models/objects/group.dart';
+import 'package:swolemate/models/objects/set.dart';
 
-class DatabaseHelper {
+import 'databasedumps.dart';
+
+class DBHelper {
   
   static final _databaseName = "MyDatabase.db";
   static final _databaseVersion = 1;
@@ -24,8 +29,8 @@ class DatabaseHelper {
   static final groupName = 'name';
 
   // make this a singleton class
-  DatabaseHelper._privateConstructor();
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  DBHelper._privateConstructor();
+  static final DBHelper instance = DBHelper._privateConstructor();
 
   // only have a single app-wide reference to the database
   static Database _database;
@@ -54,28 +59,15 @@ class DatabaseHelper {
 
   // SQL code to create the database exercise
   Future _onCreate(Database db, int version) async {
-    await db.execute('''
-          CREATE TABLE $exercise (
-            $exerciseId INTEGER PRIMARY KEY,
-            $exerciseName TEXT NOT NULL,
-            $exerciseType INTEGER NOT NULL,
-            $exercisePref INTEGER NOT NULL,
-            $exerciseSuf INTEGER NOT NULL,
-            $exerciseDesc TEXT
-          );
-          CREATE TABLE $group (
-            $groupId INTEGER PRIMARY KEY,
-            $groupName TEXT NOT NULL
-          );
-          CREATE TABLE $belongsIn (
-            $groupId INTEGER PRIMARY KEY,
-            $exerciseId INTEGER PRIMARY KEY,
-            FOREIGN KEY ($exerciseId) REFERENCES $exercise($exerciseId),
-            FOREIGN KEY ($groupId) REFERENCES $group($groupId)
-          );
-          '''
-          
-          );
+    await db.execute('' + 
+      DBDump.getCreateExerciseTable() + 
+      DBDump.getCreateGroupTable() + 
+      DBDump.getCreateGroupContainsExerciseTable() +
+      DBDump.getPopulateGroups() +
+      DBDump.testGroupChest() + 
+      DBDump.testPopulateChest() +
+      ''
+    );
   }
   
   // Helper methods
@@ -83,14 +75,34 @@ class DatabaseHelper {
   // Inserts a row in the database where each key in the Map is a column name
   // and the value is the column value. The return value is the id of the
   // inserted row.
-  Future<int> insertIntoExercise(Map<String, dynamic> row) async {
+  Future<int> insertExercise(Exercise exercise) async {
     Database db = await instance.database;
-    return await db.insert(exercise, row);
+    
+    await db.insert(
+      'exercises',
+      exercise.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
-  Future<int> insertIntoGroup(Map<String, dynamic> row) async {
+  Future<int> insertGroup(ExerciseGroup group) async {
     Database db = await instance.database;
-    return await db.insert(group, row);
+    
+    await db.insert(
+      'groups',
+      group.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> insertSet (ExerciseSet set) async {
+    Database db = await instance.database;
+    
+    await db.insert(
+      'sets',
+      set.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   void insertIntoBelongsIn(Map<String, dynamic> row) async {
@@ -103,6 +115,16 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> queryAllRows() async {
     Database db = await instance.database;
     return await db.rawQuery('SELECT * FROM $exercise');
+  }
+
+  getAllExercises() async {
+    final db = await database;
+    var res = await db.query("Exercise");
+    List<Exercise> list =
+        res.isNotEmpty ? res.map((c) => Exercise.fromMap(c)).toList() : [];
+    //.then((){
+      return list;
+    //});
   }
 
   // All of the methods (insert, query, update, delete) can also be done using
