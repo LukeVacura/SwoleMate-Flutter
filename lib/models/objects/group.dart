@@ -3,25 +3,30 @@ import 'package:flutter/material.dart';
 
 class ExerciseGroup {
   String name;
-  String bigGroup;
+  String desc;
 
   ExerciseGroup({
     @required this.name,
-    bigGroup,
+    desc,
   });
 
   factory ExerciseGroup.fromMap(Map<String, dynamic> json) => new ExerciseGroup(
       name: json["name"],
-      bigGroup: json["bigGroup"],
+      desc: json["desc"],
     );
 
     Map<String, dynamic> toMap() => {
         "name": name,
-        "bigGroup": bigGroup,
+        "desc": desc,
     };
 
 
     get exercisegroup{
       return ExerciseGroup;
+    }
+
+    @override
+    String toString(){
+      return 'Group{name: $name, desc: $desc}';
     }
 }

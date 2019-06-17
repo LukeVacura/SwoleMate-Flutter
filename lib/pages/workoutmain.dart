@@ -5,8 +5,6 @@ import 'package:swolemate/models/handlers/settingshandler.dart';
 //import 'package:swolemate/models/objects/firebase.dart';
 import 'package:swolemate/models/objects/app.dart';
 import 'package:swolemate/models/appmodel.dart';
-import 'package:swolemate/models/objects/colorlist.dart';
-import 'dart:async';
 
 import 'package:swolemate/widgets/helpers/confirmdialog.dart';
 import 'package:swolemate/widgets/ui/loading.dart';
