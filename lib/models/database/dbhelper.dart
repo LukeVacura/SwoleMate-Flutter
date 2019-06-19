@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,53 +8,45 @@ import 'package:swolemate/models/objects/exercise.dart';
 import 'package:swolemate/models/objects/group.dart';
 import 'package:swolemate/models/objects/set.dart';
 
-import 'dump.dart';
+/* This class is the main mediator between the database and the app itself -
+everything will call the app through this database. The database is loaded
+off a SQLite .db file. The database comes pre-dumped with standardized info
+such as basic exercises and possibly basic workouts. Essentially, it builds
+the schema. Later on, the user can edit the database through queries
+but the DB is already built. */
 
 class DBHelper {
-  static final _databaseName = "SwoleMateDB5.db";
-  static final _databaseVersion = 1;
+  // The name of the database file that is called upon:
+  static String databaseName = "swolematedb.db";
+  // The folder that the database exists in (should be assets)
+  static String databaseLoc = "assets";
+  static Database _database; 
 
-  // make this a singleton class
-  DBHelper._privateConstructor();
-  static final DBHelper instance = DBHelper._privateConstructor();
-
-  // only have a single app-wide reference to the database
-  static Database _database;
-  Future<Database> get database async {
-    if (_database != null) return _database;
-    // lazily instantiate the db the first time it is accessed
-    _database = await _initDatabase();
+  static Future<Database> get database async {
+    if (_database != null){
+      return _database;
+    }
+    _database = await initializeDB();
     return _database;
   }
-  
-  // this opens the database (and creates it if it doesn't exist)
-  _initDatabase() async {
+
+  static initializeDB() async{
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, _databaseName);
-    return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
-  }
+    String path = join(documentsDirectory.path, databaseName);
 
-  static Future<void> deleteDatabase() async{
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, _databaseName);
-    databaseFactory.deleteDatabase(path);
-    print("Successful deletion");
-  }
+    // Only copy if the database doesn't exist
+    if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound){
+      // Load database from asset and copy
+      ByteData data = await rootBundle.load(join(databaseLoc, databaseName));
+      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
-  // SQL code to create the database exercise
-  Future _onCreate(Database db, int version) async {
-    await db.execute('' + 
-      DBDump.getCreateExerciseTable() + 
-      ''
-    );
-    await db.execute('' + DBDump.getCreateGroupTable() + '');
-    await db.execute('' + DBDump.getCreateGroupContainsExerciseTable() + '');
-
-    for(int i=0; i<DBDump.getPopulateGroups().length; i++){
-      await insertGroup(DBDump.getPopulateGroups().elementAt(i));
+      // Save copied asset to documents
+      await new File(path).writeAsBytes(bytes);
     }
+
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String databasePath = join(appDocDir.path, databaseName);
+      return await openDatabase(databasePath);
   }
   
   // Helper methods
@@ -62,7 +55,7 @@ class DBHelper {
   // and the value is the column value. The return value is the id of the
   // inserted row.
   Future<void> insertExercise(Exercise exercise) async {
-    Database db = await instance.database;
+    Database db = await database;
     
     await db.insert(
       'exercises',
@@ -72,7 +65,7 @@ class DBHelper {
   }
 
   Future<void> insertGroup(ExerciseGroup group) async {
-    Database db = await instance.database;
+    Database db = await database;
     
     await db.insert(
       'groups',
@@ -82,7 +75,7 @@ class DBHelper {
   }
 
   Future<void> insertSet (ExerciseSet set) async {
-    Database db = await instance.database;
+    Database db = await database;
     
     await db.insert(
       'sets',
@@ -122,7 +115,7 @@ class DBHelper {
     });
   }
 
-  Future<List<ExerciseGroup>> getGroups() async {
+  static Future<List<ExerciseGroup>> getGroups() async {
     // Get a reference to the database.
     final Database db = await database;
 

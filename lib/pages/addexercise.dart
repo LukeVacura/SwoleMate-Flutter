@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:swolemate/models/appmodel.dart';
 import 'package:swolemate/models/database/dbhelper.dart';
 
@@ -26,9 +27,11 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     super.initState();
   }
 
-  static final dbHelper = DBHelper.instance;
+  static get database async{
+    return await DBHelper.database;
+  }
 
-  Future<List<ExerciseGroup>> groups = dbHelper.getGroups();
+  Future<List<ExerciseGroup>> groups = database.getGroups();
 
   Widget _buildPageContent(AppModel model) {
     return Scaffold(
