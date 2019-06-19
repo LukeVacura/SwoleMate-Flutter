@@ -37,7 +37,7 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     return Scaffold(
       appBar: _buildAppBar(model),
       body: _buildExerciseList(model),
-    );
+    ); //
   }
 
   @override
