@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swolemate/models/objects/exercise.dart';
+import 'exercise.dart';
 
 
 class ExerciseSet {

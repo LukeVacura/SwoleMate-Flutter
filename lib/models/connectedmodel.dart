@@ -7,9 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'package:swolemate/models/objects/user.dart';
-import 'package:swolemate/models/objects/exercise.dart';
 import 'package:swolemate/models/objects/settings.dart';
 import 'package:swolemate/models/objects/firebase.dart';
+import 'objects/exercise.dart';
 
 
 

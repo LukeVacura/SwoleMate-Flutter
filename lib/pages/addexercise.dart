@@ -5,8 +5,11 @@ import 'package:swolemate/models/appmodel.dart';
 import 'package:swolemate/models/database/dbhelper.dart';
 
 import 'package:swolemate/models/handlers/settingshandler.dart';
-import 'package:swolemate/models/objects/Exercise.dart';
+import 'package:swolemate/models/objects/exercise.dart';
 import 'package:swolemate/models/objects/group.dart';
+
+import '../models/database/dbhelper.dart' as prefix0;
+
 
 class ExerciseListPage extends StatefulWidget {
   final AppModel model;
@@ -27,11 +30,10 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     super.initState();
   }
 
-  static get database async{
-    return await DBHelper.database;
+  printExercises() async{
+    print(await DBHelper.instance.exercises());
   }
 
-  Future<List<ExerciseGroup>> groups = database.getGroups();
 
   Widget _buildPageContent(AppModel model) {
     return Scaffold(
@@ -73,8 +75,9 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
   }
 
   Widget _buildExerciseList(AppModel model){
-    FutureBuilder<List<ExerciseGroup>>(
-      future: groups,
+    printExercises();
+    FutureBuilder<List<Exercise>>(
+      future: DBHelper.instance.exercises(),
       initialData: List(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {

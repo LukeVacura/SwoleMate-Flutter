@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-
-
 class Exercise {
   String id;
   String name;
@@ -10,8 +7,8 @@ class Exercise {
   String desc;
 
   Exercise({
-    @required this.id,
-    @required this.name,
+    this.id,
+    this.name,
     this.type,
     this.pref,
     this.suf,
@@ -35,9 +32,12 @@ class Exercise {
         "suf": suf,
         "desc": desc,
     };
-
-
     get exercise{
       return Exercise;
+    }
+
+    @override
+    String toString() {
+      return 'Exercise{id: $id, name: $name, type: $type, pref: $pref, suf: $suf, desc: $desc}';
     }
 }

@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:swolemate/models/objects/exercise.dart';
+
+// Object files
 import 'package:swolemate/models/objects/group.dart';
-import 'package:swolemate/models/objects/set.dart';
+import '../objects/exercise.dart';
+
 
 /* This class is the main mediator between the database and the app itself -
 everything will call the app through this database. The database is loaded
@@ -16,74 +19,68 @@ the schema. Later on, the user can edit the database through queries
 but the DB is already built. */
 
 class DBHelper {
-  // The name of the database file that is called upon:
-  static String databaseName = "swolematedb.db";
+  // The name of the database that is called upon:
+  static String databaseName = "swolematedba";
+  // The database file
+  static String databaseFile = databaseName + ".db";
   // The folder that the database exists in (should be assets)
   static String databaseLoc = "assets";
-  static Database _database; 
 
-  static Future<Database> get database async {
-    if (_database != null){
-      return _database;
-    }
-    _database = await initializeDB();
+
+  DBHelper._();
+
+  static Database _database;
+  Future<Database> get database async {
+    if(_database != null) return _database;
+    _database = await initDb();
     return _database;
   }
 
-  static initializeDB() async{
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, databaseName);
+  static final DBHelper instance = DBHelper._();
 
-    // Only copy if the database doesn't exist
-    if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound){
-      // Load database from asset and copy
-      ByteData data = await rootBundle.load(join(databaseLoc, databaseName));
-      List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+  initDb() async{
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String path = join(documentsDirectory.path, databaseFile);
 
-      // Save copied asset to documents
-      await new File(path).writeAsBytes(bytes);
-    }
+      // Only copy if the database doesn't exist
+      if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound){
+        // Load database from asset and copy
+        print("Database does not exist");
+        ByteData data = await rootBundle.load(join('assets', databaseName));
+        List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+
+        // Save copied asset to documents
+        await new File(path).writeAsBytes(bytes);
+      }
+      // Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      // String path = join(documentsDirectory.path, databaseFile);
+      // return await openDatabase(path,
+      //   version: 1);
 
       Directory appDocDir = await getApplicationDocumentsDirectory();
-      String databasePath = join(appDocDir.path, databaseName);
+      String databasePath = join(appDocDir.path, databaseFile);
+      print("Returning DB");
       return await openDatabase(databasePath);
   }
   
-  // Helper methods
+  Future<void> insertExercise(Exercise exercise) async{
+    final Database db = await database;
 
-  // Inserts a row in the database where each key in the Map is a column name
-  // and the value is the column value. The return value is the id of the
-  // inserted row.
-  Future<void> insertExercise(Exercise exercise) async {
-    Database db = await database;
-    
     await db.insert(
-      'exercises',
+      'exercise',
       exercise.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+  Future<void> insertGroup(ExerciseGroup group) async{
+    final Database db = await database;
 
-  Future<void> insertGroup(ExerciseGroup group) async {
-    Database db = await database;
-    
     await db.insert(
-      'groups',
+      'exGroup',
       group.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-
-  Future<void> insertSet (ExerciseSet set) async {
-    Database db = await database;
-    
-    await db.insert(
-      'sets',
-      set.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
   Future<void> insertExIntoGroup(Exercise exercise, ExerciseGroup group) async{
     final Database db = await database;
 
@@ -96,7 +93,7 @@ class DBHelper {
 
   Future<List<Exercise>> exercises() async {
     // Get a reference to the database.
-    final Database db = await database;
+    final db = await database;
 
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query(
@@ -115,9 +112,13 @@ class DBHelper {
     });
   }
 
-  static Future<List<ExerciseGroup>> getGroups() async {
+  printEx() async{
+   print(await exercises());
+  }
+
+  Future<List<ExerciseGroup>> getGroups() async {
     // Get a reference to the database.
-    final Database db = await database;
+    final Database db = await _database;
 
     // Query the table for all The Dogs.
     final List<Map<String, dynamic>> maps = await db.query('exGroup');
