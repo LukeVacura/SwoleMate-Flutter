@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-class ExerciseGroup {
+class ExerciseGroup{
   String name;
   String desc;
 
@@ -29,4 +29,7 @@ class ExerciseGroup {
     String toString(){
       return 'Group{name: $name, desc: $desc}';
     }
+
+
+  
 }
