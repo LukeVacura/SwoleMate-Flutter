@@ -22,7 +22,7 @@ but the DB is already built. */
 
 class DBHelper {
   // The name of the database that is called upon:
-  static String databaseName = "swolematedba";
+  static String databaseName = "swolematedbv2";
   // The database file
   static String databaseFile = databaseName + ".db";
   // The folder that the database exists in (should be assets)
@@ -120,6 +120,7 @@ class DBHelper {
         return Exercise(
           id: maps[i]['id'],
           name: maps[i]['name'],
+          equip: maps[i]['equip'],
           type: maps[i]['type'],
           pref: maps[i]['pref'],
           suf: maps[i]['suf'],

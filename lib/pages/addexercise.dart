@@ -187,10 +187,10 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
             itemCount: snapshot.data.length,
             itemBuilder: (BuildContext context, int index) {
               Exercise item = snapshot.data[index];
+              String ex = "";
+              item.equip == "" ? ex = item.name : ex = item.equip + " " + item.name.toLowerCase(); 
               return ListTile(
-                title: Text(item.name),
-                leading: Text(item.id),
-                trailing: Text(item.desc),
+                title: Text(ex),
               );
             },
           );

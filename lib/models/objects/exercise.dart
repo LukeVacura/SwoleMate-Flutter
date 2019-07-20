@@ -1,6 +1,7 @@
 class Exercise {
   String id;
   String name;
+  String equip;
   int type;
   int pref;
   int suf;
@@ -9,6 +10,7 @@ class Exercise {
   Exercise({
     this.id,
     this.name,
+    this.equip,
     this.type,
     this.pref,
     this.suf,
@@ -18,6 +20,7 @@ class Exercise {
   factory Exercise.fromMap(Map<String, dynamic> json) => new Exercise(
         id: json["id"],
         name: json["name"],
+        equip: json["equip"],
         type: json["type"],
         pref: json["pref"],
         suf: json["suf"],  
@@ -27,6 +30,7 @@ class Exercise {
     Map<String, dynamic> toMap() => {
         "id": id,
         "name": name,
+        "equip": equip,
         "type": type,
         "pref": pref,
         "suf": suf,
@@ -38,6 +42,6 @@ class Exercise {
 
     @override
     String toString() {
-      return 'Exercise{id: $id, name: $name, type: $type, pref: $pref, suf: $suf, desc: $desc}';
+      return 'Exercise{id: $id, name: $name, equip: $equip, type: $type, pref: $pref, suf: $suf}';
     }
 }
